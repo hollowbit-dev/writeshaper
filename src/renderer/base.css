@@ -1,0 +1,145 @@
+/* Writeshaper design tokens: light liquid glass first, with a matching dark mode.
+   One brand gradient (tangerine → rose → violet) used only where the AI is working. */
+:root {
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, monospace;
+
+  --tangerine: #ff9f4d;
+  --rose: #f9457f;
+  --violet: #7f54f8;
+  --sky: #3b9eff;
+  --ink-grad: linear-gradient(120deg, var(--tangerine), var(--rose) 52%, var(--violet));
+  --ring: conic-gradient(from var(--spin, 0deg), #ff9f4d, #f9457f, #7f54f8, #3b9eff, #34d399, #ff9f4d);
+  --accent: #e83a76;
+  --accent-ink: #fff;
+  --good: #1fb763;
+  --bad: #f2456f;
+
+  --canvas: #f3f2f8;
+  --canvas-2: #ebe9f3;
+  --text: #1b1a22;
+  --text-2: #5d5b6b;
+  --text-3: #8f8d9c;
+  --line: rgba(30, 24, 60, .09);
+  --line-2: rgba(30, 24, 60, .14);
+  --glass: rgba(255, 255, 255, .58);
+  --glass-strong: rgba(255, 255, 255, .82);
+  --glass-edge: rgba(255, 255, 255, .9);
+  --glass-tint: rgba(255, 255, 255, .38);
+  --chip: rgba(30, 24, 60, .055);
+  --chip-hover: rgba(30, 24, 60, .09);
+  --shadow-1: 0 1px 1px rgba(25, 18, 60, .04), 0 2px 6px rgba(25, 18, 60, .05);
+  --shadow-2: 0 1px 2px rgba(25, 18, 60, .05), 0 8px 24px rgba(25, 18, 60, .08), 0 24px 60px rgba(25, 18, 60, .08);
+  --shadow-3: 0 2px 4px rgba(25, 18, 60, .06), 0 18px 48px rgba(25, 18, 60, .16), 0 50px 100px rgba(25, 18, 60, .14);
+  --hi: inset 0 1px 0 rgba(255, 255, 255, .95), inset 0 0 0 1px rgba(255, 255, 255, .5);
+
+  --spring: cubic-bezier(.34, 1.42, .64, 1);
+  --spring-soft: cubic-bezier(.22, 1.18, .36, 1);
+  --ease: cubic-bezier(.4, 0, .6, 1);
+  --out: cubic-bezier(.16, 1, .3, 1);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --accent: #ff5a91;
+    --canvas: #121118;
+    --canvas-2: #1a1922;
+    --text: #f3f2f8;
+    --text-2: #aeacbd;
+    --text-3: #7c7a8c;
+    --line: rgba(255, 255, 255, .08);
+    --line-2: rgba(255, 255, 255, .13);
+    --glass: rgba(40, 38, 52, .58);
+    --glass-strong: rgba(44, 42, 56, .86);
+    --glass-edge: rgba(255, 255, 255, .14);
+    --glass-tint: rgba(255, 255, 255, .04);
+    --chip: rgba(255, 255, 255, .07);
+    --chip-hover: rgba(255, 255, 255, .12);
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, .3);
+    --shadow-2: 0 2px 6px rgba(0, 0, 0, .3), 0 16px 40px rgba(0, 0, 0, .35);
+    --shadow-3: 0 4px 10px rgba(0, 0, 0, .35), 0 30px 80px rgba(0, 0, 0, .55);
+    --hi: inset 0 1px 0 rgba(255, 255, 255, .12), inset 0 0 0 1px rgba(255, 255, 255, .06);
+    --good: #3ddc84;
+    --bad: #ff6b8e;
+    color-scheme: dark;
+  }
+}
+@property --spin { syntax: '<angle>'; inherits: true; initial-value: 0deg; }
+@keyframes spin { to { --spin: 360deg; } }
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; height: 100%; }
+body {
+  font: 14px/1.45 var(--font);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -.005em;
+  user-select: none;
+  -webkit-user-select: none;
+  overflow: hidden;
+}
+button { font: inherit; color: inherit; border: 0; background: none; cursor: default; padding: 0; }
+input, textarea, select { font: inherit; color: inherit; }
+::selection { background: color-mix(in srgb, var(--rose) 28%, transparent); }
+:focus-visible { outline: 2px solid color-mix(in srgb, var(--accent) 70%, transparent); outline-offset: 2px; }
+
+/* Glass: a translucent fill, a bright top edge, layered soft shadow. */
+.glass {
+  background: var(--glass);
+  backdrop-filter: blur(28px) saturate(1.8);
+  -webkit-backdrop-filter: blur(28px) saturate(1.8);
+  box-shadow: var(--hi), var(--shadow-2);
+  border-radius: 22px;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 34px; padding: 0 15px; border-radius: 999px;
+  background: var(--chip); font-weight: 560; font-size: 13.5px;
+  transition: background .2s var(--ease), transform .35s var(--spring), box-shadow .2s;
+  white-space: nowrap;
+}
+.btn:hover { background: var(--chip-hover); }
+.btn:active { transform: scale(.96); }
+.btn.primary {
+  background: var(--text); color: var(--canvas);
+  box-shadow: 0 1px 0 rgba(255,255,255,.2) inset, 0 6px 16px rgba(20, 10, 40, .18);
+}
+.btn.primary:hover { background: color-mix(in srgb, var(--text) 88%, var(--rose)); }
+.btn.brand {
+  background: var(--ink-grad); color: #fff; text-shadow: 0 1px 1px rgba(120, 20, 60, .25);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 8px 22px rgba(232, 58, 118, .32);
+}
+.btn.brand:hover { filter: brightness(1.05) saturate(1.05); }
+.btn.big { height: 46px; padding: 0 24px; font-size: 15px; }
+.btn[disabled] { opacity: .45; pointer-events: none; }
+.btn svg { width: 16px; height: 16px; flex: none; }
+
+.kbd {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; padding: 0 5px;
+  border-radius: 6px; font: 600 11px/1 var(--font); color: var(--text-2);
+  background: var(--glass-strong); box-shadow: 0 0 0 .5px var(--line-2), 0 1px 0 var(--line-2);
+}
+
+/* Diff marks shared by the panel and the editor */
+.d-del { color: var(--bad); text-decoration: line-through; text-decoration-thickness: 1.5px; opacity: .75; }
+.d-ins {
+  color: var(--good); font-weight: 600;
+  background: color-mix(in srgb, var(--good) 13%, transparent);
+  border-radius: 4px; padding: 0 1px;
+  animation: insIn .5s var(--out) both;
+}
+@keyframes insIn { from { background: color-mix(in srgb, var(--good) 40%, transparent); } }
+
+.caret {
+  display: inline-block; width: 2px; height: 1.1em; margin-left: 1px; vertical-align: -.17em; border-radius: 2px;
+  background: var(--ink-grad); animation: blink 1s steps(2, start) infinite;
+}
+@keyframes blink { to { visibility: hidden; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}

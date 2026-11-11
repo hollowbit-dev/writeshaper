@@ -1,0 +1,31 @@
+// Screenshots of every screen in demo mode (no model needed). Output: .shots/
+import { _electron as electron } from 'playwright';
+import fs from 'fs'; import os from 'os'; import path from 'path';
+const out = path.resolve('.shots'); fs.mkdirSync(out, { recursive: true });
+const data = fs.mkdtempSync(path.join(os.tmpdir(), 'ws-'));
+const theme = process.argv[2] || 'light';
+fs.writeFileSync(path.join(data, 'writeshaper.json'), JSON.stringify({ onboarded: process.argv.includes('--setup') ? false : true, theme }));
+const app = await electron.launch({ args: ['.'], env: { ...process.env, WRITESHAPER_DEMO: '1', WRITESHAPER_DATA: data, WRITESHAPER_KEEP_PANEL: '1' } });
+const wins = async (n) => { for (let i = 0; i < 100; i++) { const w = app.windows(); if (w.length >= n) return w; await new Promise((r) => setTimeout(r, 100)); } return app.windows(); };
+const ws = await wins(2);
+const main = ws.find((w) => w.url().endsWith('index.html'));
+const panel = ws.find((w) => w.url().endsWith('panel.html'));
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+await main.waitForLoadState();
+for (const p of [main, panel]) await p.emulateMedia({ colorScheme: theme === 'dark' ? 'dark' : 'light' });
+await wait(1200);
+const shot = async (p, name) => { await p.screenshot({ path: `${out}/${theme}-${name}.png` }); console.log('shot', name); };
+if (process.argv.includes('--setup')) { await shot(main, 'setup'); await app.close(); process.exit(0); }
+await main.fill('#ed', 'Their going to announce the results next week, its been a long proces but I think everyone done there best.\n\nI definately think we should recieve the report before friday so we can review it seperate from the other documents.');
+await main.dispatchEvent('#ed', 'input');
+await wait(2500);
+await shot(main, 'write');
+await main.click('#dock [data-mode="pro"]'); await wait(300); await shot(main, 'rewrite-streaming'); await wait(2500); await shot(main, 'rewrite');
+await main.click('#sheetDiscard');
+await main.click('#tabs [data-view="shortcut"]'); await wait(900); await shot(main, 'shortcut'); await wait(3600); await shot(main, 'shortcut-demo');
+await main.click('#tabs [data-view="settings"]'); await wait(900); await shot(main, 'settings');
+await main.evaluate(() => ws.tryShortcut());
+await wait(500); await shot(panel, 'panel-streaming');
+await wait(3000); await shot(panel, 'panel');
+await panel.keyboard.press(process.platform === 'darwin' ? 'Meta+5' : 'Control+5'); await wait(3000); await shot(panel, 'panel-pro');
+await app.close();

@@ -1,0 +1,96 @@
+{
+  "name": "writeshaper",
+  "productName": "Writeshaper",
+  "version": "1.0.0",
+  "description": "Fix and polish your writing in any app, privately. Free, offline, for Windows and Mac.",
+  "main": "src/main.js",
+  "private": true,
+  "author": "Hollowbit Studio",
+  "license": "MIT",
+  "homepage": "https://hollowbit.dev/writeshaper/",
+  "repository": "github:hollowbit-dev/writeshaper",
+  "scripts": {
+    "start": "electron .",
+    "demo": "WRITESHAPER_DEMO=1 electron .",
+    "llama": "bash scripts/fetch-llama.sh",
+    "test": "node test/engine.mjs && node test/e2e.mjs && node test/packaged.mjs",
+    "icon": "swift scripts/make-icon.swift assets/icon.png && sips -z 1024 1024 assets/icon.png",
+    "dist:mac": "electron-builder --mac --publish never",
+    "dist:win": "electron-builder --win --publish never",
+    "dist": "electron-builder --mac --win --publish never",
+    "site": "node site/build.mjs",
+    "accuracy": "node test/accuracy.mjs",
+    "shots": "node test/shots.mjs light && node test/shots.mjs dark"
+  },
+  "devDependencies": {
+    "electron": "^33.4.11",
+    "electron-builder": "^25.1.8",
+    "playwright": "1.48"
+  },
+  "build": {
+    "appId": "dev.hollowbit.writeshaper",
+    "productName": "Writeshaper",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "assets/icon.png",
+      "assets/tray*.png",
+      "package.json"
+    ],
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "category": "public.app-category.productivity",
+      "icon": "assets/icon.png",
+      "identity": null,
+      "artifactName": "Writeshaper-${version}-mac-${arch}.${ext}",
+      "extendInfo": {
+        "NSAppleEventsUsageDescription": "Writeshaper copies the text you select and pastes the improved version back."
+      },
+      "extraResources": [
+        {
+          "from": "vendor/llama/darwin-${arch}",
+          "to": "llama"
+        }
+      ]
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icon.png",
+      "signAndEditExecutable": false,
+      "extraResources": [
+        {
+          "from": "vendor/llama/win32-x64",
+          "to": "llama"
+        },
+        {
+          "from": "vendor/redist/vc_redist.x64.exe",
+          "to": "redist/vc_redist.x64.exe"
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "Writeshaper-Setup-${version}-win-x64.exe",
+      "include": "installer/installer.nsh"
+    },
+    "afterPack": "scripts/after-pack.js"
+  }
+}

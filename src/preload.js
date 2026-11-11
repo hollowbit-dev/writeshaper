@@ -1,0 +1,36 @@
+// The only bridge between Writeshaper's windows and the computer.
+const { contextBridge, ipcRenderer } = require('electron');
+const on = (ch) => (cb) => ipcRenderer.on(ch, (_e, d) => cb(d));
+const call = (ch) => (...a) => ipcRenderer.invoke(ch, ...a);
+contextBridge.exposeInMainWorld('ws', {
+  platform: process.platform,
+  getState: call('get-state'),
+  setSettings: call('set-settings'),
+  pauseShortcut: call('pause-shortcut'),
+  models: call('models'),
+  downloadModel: call('download-model'),
+  cancelDownload: call('cancel-download'),
+  deleteModel: call('delete-model'),
+  startEngine: call('start-engine'),
+  rewrite: call('rewrite'),
+  cancel: call('cancel'),
+  panelSize: call('panel-size'),
+  panelPin: call('panel-pin'),
+  panelClose: call('panel-close'),
+  panelCopy: call('panel-copy'),
+  panelReplace: call('panel-replace'),
+  panelOpenApp: call('panel-open-app'),
+  permission: call('permission'),
+  tryShortcut: call('try-shortcut'),
+  openExternal: call('open-external'),
+  checkUpdates: call('check-updates'),
+  skipVersion: call('skip-version'),
+  onStream: on('stream'),
+  onEngine: on('engine'),
+  onSettings: on('settings'),
+  onModelProgress: on('model-progress'),
+  onPanelOpen: on('panel-open'),
+  onPanelHidden: on('panel-hidden'),
+  onGo: on('go'),
+  onUpdate: on('update'),
+});

@@ -1,0 +1,7 @@
+node_modules/
+dist/
+vendor/
+.shots/
+scripts/release.sh
+.DS_Store
+installer/release-notes-*.md.bak

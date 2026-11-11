@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:">
+<title>Writeshaper</title>
+<link rel="stylesheet" href="base.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="bg" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+<header class="titlebar">
+  <div class="tabs" id="tabs">
+    <span class="tab-pill"></span>
+    <button data-view="write" class="on">Write</button>
+    <button data-view="shortcut">Shortcut</button>
+    <button data-view="settings">Settings</button>
+  </div>
+  <div class="engine" id="engine"><span class="dot"></span><span id="engineText">Starting…</span></div>
+</header>
+
+<!-- First run -->
+<section class="view setup" id="v-setup" hidden>
+  <div class="setup-inner">
+    <div class="hero-icon" aria-hidden="true">
+      <div class="hi-tile">
+        <i class="l l1"></i><i class="l l2a"></i><i class="l l2b"></i><i class="l l3"></i>
+        <svg class="spark s1" viewBox="0 0 20 20"><path d="M10 0Q11.6 8.4 20 10 11.6 11.6 10 20 8.4 11.6 0 10 8.4 8.4 10 0Z"/></svg>
+        <svg class="spark s2" viewBox="0 0 20 20"><path d="M10 0Q11.6 8.4 20 10 11.6 11.6 10 20 8.4 11.6 0 10 8.4 8.4 10 0Z"/></svg>
+      </div>
+    </div>
+    <h1 class="reveal">Write clearly, <span class="grad">privately.</span></h1>
+    <p class="lead reveal">Writeshaper fixes and polishes your writing in any app. It runs on this computer, so nothing you write ever leaves it.</p>
+
+    <div class="steps">
+      <div class="step glass reveal" id="stepModel">
+        <div class="step-n">1</div>
+        <div class="step-body">
+          <h3>Download the writing model</h3>
+          <p>A one-time download, like a game update. After that, Writeshaper works offline, and you can delete it any time in Settings.</p>
+          <div class="model-pick" id="modelPick">
+            <button data-id="standard" class="on"><b>Standard</b><span>1.9 GB · recommended</span></button>
+            <button data-id="best"><b>Best</b><span>2.7 GB · catches a little more</span></button>
+          </div>
+          <div class="dl" id="dl" hidden>
+            <svg class="ring" viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" class="track"/><circle cx="22" cy="22" r="19" class="fill" id="dlRing"/></svg>
+            <div class="dl-text"><b id="dlPct">0%</b><span id="dlInfo">Starting…</span></div>
+            <button class="btn" id="dlCancel">Pause</button>
+          </div>
+        </div>
+        <div class="step-action"><button class="btn brand" id="dlStart">Download</button></div>
+      </div>
+      <div class="step glass reveal" id="stepPerm" hidden>
+        <div class="step-n">2</div>
+        <div class="step-body">
+          <h3>Let Writeshaper copy and paste for you</h3>
+          <p>macOS asks once. Turn on <b>Writeshaper</b> under Privacy &amp; Security → Accessibility. It's only used to press Copy and Paste when you use the shortcut.</p>
+        </div>
+        <div class="step-action"><button class="btn" id="permBtn">Open Settings</button></div>
+      </div>
+      <div class="step glass reveal" id="stepTry">
+        <div class="step-n" id="tryN">2</div>
+        <div class="step-body">
+          <h3>Try it on real text</h3>
+          <p>Select text in any app and press <span class="keys-inline" data-shortcut></span>.</p>
+        </div>
+        <div class="step-action"><button class="btn primary" id="finish" disabled>Let's go</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Write -->
+<section class="view write" id="v-write" hidden>
+  <div class="editor glass">
+    <div class="ed-head">
+      <div class="ed-stats" id="stats">0 words</div>
+      <div class="ed-tools">
+        <button class="btn sm" id="edCopy">Copy</button>
+        <button class="btn sm" id="edClear">Clear</button>
+      </div>
+    </div>
+    <div class="ed-wrap" id="edWrap">
+      <div class="ed-back" id="edBack" aria-hidden="true"></div>
+      <textarea id="ed" spellcheck="false" placeholder="Start writing, or paste something you want to polish. Suggestions appear as you go."></textarea>
+    </div>
+    <div class="sheet" id="sheet" hidden>
+      <div class="sheet-glow" aria-hidden="true"></div>
+      <div class="sheet-card">
+        <div class="sheet-head"><span class="sheet-title" id="sheetTitle">Rewriting</span><span class="sheet-count" id="sheetCount"></span></div>
+        <div class="sheet-text" id="sheetText"></div>
+        <div class="sheet-foot">
+          <button class="btn" id="sheetDiscard">Discard</button>
+          <button class="btn brand" id="sheetUse">Use this</button>
+        </div>
+      </div>
+    </div>
+    <nav class="dock" id="dock">
+      <button data-mode="fix" class="fixall"><span class="mi">✓</span>Fix all<span class="badge" id="fixCount"></span></button>
+      <span class="sep"></span>
+      <button data-mode="clear">Clearer</button>
+      <button data-mode="short">Shorter</button>
+      <button data-mode="friendly">Friendlier</button>
+      <button data-mode="pro">Professional</button>
+      <button data-mode="translate">Translate</button>
+      <button data-mode="ask">Ask…</button>
+    </nav>
+    <div class="ask-pop glass" id="askPop" hidden>
+      <input id="askIn" placeholder="Tell it what to change, like “turn this into a bullet list”" spellcheck="false">
+      <select id="langSel" hidden></select>
+      <button class="btn brand sm" id="askGo">Go</button>
+    </div>
+  </div>
+
+  <aside class="side">
+    <div class="side-head">
+      <h2>Suggestions</h2>
+      <span class="side-badge" id="sideBadge">0</span>
+      <span class="side-state" id="sideState"></span>
+    </div>
+    <div class="cards" id="cards"></div>
+    <div class="empty" id="empty">
+      <div class="empty-ring"><svg viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <b id="emptyTitle">Nothing to fix</b>
+      <span id="emptyText">Write or paste text on the left. Writeshaper checks it as you go, on this computer.</span>
+    </div>
+  </aside>
+</section>
+
+<!-- Shortcut -->
+<section class="view shortcut" id="v-shortcut" hidden>
+  <div class="sc-hero">
+    <p class="eyebrow">Works in every app</p>
+    <h1>Select. Press. <span class="grad">Done.</span></h1>
+    <p class="lead">Select text in Mail, Word, Discord, a browser, anywhere. Press the shortcut. Writeshaper fixes it, and <b>Replace</b> pastes it back.</p>
+  </div>
+  <div class="scene glass" id="scene" aria-hidden="true">
+    <div class="sc-win">
+      <div class="sc-chrome"><i></i><i></i><i></i><span>New message</span></div>
+      <div class="sc-row"><b>To</b> sam@example.com</div>
+      <div class="sc-row"><b>Subject</b> Saturday</div>
+      <div class="sc-text"><span class="sc-line" id="scLine"><span class="sc-sel"></span><span class="sc-words" id="scWords"></span></span><span class="sc-caret"></span></div>
+    </div>
+    <div class="sc-keys" id="scKeys" data-shortcut></div>
+    <div class="sc-panel" id="scPanel">
+      <div class="sc-glow"></div>
+      <div class="sc-pcard">
+        <div class="sc-ph"><img src="../../assets/icon.png" alt=""> Writeshaper <span class="sc-st" id="scSt">Fixing…</span></div>
+        <div class="sc-pt" id="scPt"></div>
+        <div class="sc-pf"><span class="sc-chip on">Fix</span><span class="sc-chip">Shorter</span><span class="sc-chip">Professional</span><span class="sc-btn" id="scBtn">Replace ↵</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="perm glass" id="permCard" hidden>
+    <div class="perm-ic">!</div>
+    <div><b>One permission needed</b><span>To copy your selection and paste the result, turn on Writeshaper in Privacy &amp; Security → Accessibility.</span></div>
+    <button class="btn" id="permBtn2">Open Settings</button>
+  </div>
+  <div class="practice glass">
+    <div class="pr-head"><span class="pr-tag">Practice</span><span>Select the text below, then press <span class="keys-inline" data-shortcut></span></span></div>
+    <textarea id="practice" spellcheck="false">hey sam, i think we should of left earlier, their was alot of trafic and we was late for the begining of the show.</textarea>
+  </div>
+</section>
+
+<!-- Settings -->
+<section class="view settings" id="v-settings" hidden>
+  <div class="set-inner">
+    <h2 class="set-title">Settings</h2>
+    <div class="group glass">
+      <div class="row">
+        <div class="row-text"><b>Shortcut</b><span>Opens Writeshaper over any app.</span></div>
+        <button class="recorder" id="recorder"><span id="recKeys"></span></button>
+      </div>
+      <div class="row">
+        <div class="row-text"><b>When the panel opens</b><span>What it does to your selection straight away.</span></div>
+        <select id="firstAction">
+          <option value="fix">Fix mistakes</option><option value="clear">Make it clearer</option><option value="short">Make it shorter</option>
+          <option value="friendly">Make it friendlier</option><option value="pro">Make it professional</option><option value="translate">Translate</option>
+        </select>
+      </div>
+      <div class="row">
+        <div class="row-text"><b>Translate to</b><span>Your usual language for Translate.</span></div>
+        <select id="translateTo"></select>
+      </div>
+      <div class="row">
+        <div class="row-text"><b>Check as I type</b><span>Suggestions in the Write tab.</span></div>
+        <button class="toggle" id="liveCheck" role="switch"><i></i></button>
+      </div>
+      <div class="row">
+        <div class="row-text"><b>Open at login</b><span>So the shortcut is always ready.</span></div>
+        <button class="toggle" id="openAtLogin" role="switch"><i></i></button>
+      </div>
+    </div>
+
+    <h3 class="group-title">Writing model</h3>
+    <div class="group glass" id="modelRows"></div>
+
+    <h3 class="group-title">Appearance</h3>
+    <div class="group glass">
+      <div class="row">
+        <div class="row-text"><b>Theme</b></div>
+        <div class="seg3" id="theme">
+          <button data-t="system">Auto</button><button data-t="light">Light</button><button data-t="dark">Dark</button>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="group-title">About</h3>
+    <div class="group glass">
+      <div class="row">
+        <div class="row-text"><b>Check for updates</b><span id="updText">Once a day, Writeshaper asks GitHub for the newest version number. Nothing else is sent.</span></div>
+        <button class="toggle" id="autoUpdate" role="switch"><i></i></button>
+      </div>
+      <div class="row">
+        <div class="row-text"><b>Writeshaper <span id="version"></span></b><span>Free and open source. No account, no tracking.</span></div>
+        <button class="btn sm" id="checkNow">Check now</button>
+      </div>
+      <a class="row link" id="studio">
+        <div class="row-text"><b>by Hollowbit Studio</b><span>Free tools that run on your own computer.</span></div>
+        <span class="chev">↗</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="toast glass" id="toast" hidden></div>
+
+<script src="../diff.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

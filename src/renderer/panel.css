@@ -1,0 +1,127 @@
+/* The floating panel. The window itself is transparent; .stage leaves room for the shadow. */
+html, body { background: transparent; }
+.stage { padding: 14px 16px 22px; }
+.frame { position: relative; transform-origin: 50% 0; }
+.frame > .card { z-index: 1; }
+
+.card {
+  position: relative;
+  border-radius: 24px;
+  background: var(--glass-strong);
+  backdrop-filter: blur(40px) saturate(1.9);
+  -webkit-backdrop-filter: blur(40px) saturate(1.9);
+  box-shadow: var(--hi), 0 0 0 .5px var(--line-2), var(--shadow-3);
+}
+body.win .card { background: color-mix(in srgb, var(--canvas) 96%, white); }
+.frame.enter { animation: cardIn .62s var(--spring-soft) both; }
+.frame.leave { animation: cardOut .16s var(--ease) both; }
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(-6px) scale(.94); filter: blur(14px); }
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+@keyframes cardOut { to { opacity: 0; transform: scale(.97); filter: blur(6px); } }
+
+/* The working glow: a moving colour ring around the edge while the model writes. */
+.glow {
+  position: absolute; inset: -1.5px; border-radius: 25.5px; z-index: -1; pointer-events: none;
+  padding: 1.5px; background: var(--ring);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  opacity: 0; transition: opacity .5s var(--ease);
+  animation: spin 2.2s linear infinite;
+}
+.halo {
+  position: absolute; inset: 6px; border-radius: 30px; background: var(--ring); z-index: -2; pointer-events: none;
+  filter: blur(22px); opacity: 0; transition: opacity .6s var(--ease); animation: spin 2.2s linear infinite;
+}
+.frame.working .glow { opacity: 1; }
+.frame.working .halo { opacity: .38; }
+.frame.flash .glow { opacity: 1; animation: spin 2.2s linear infinite, flash .9s var(--ease) forwards; }
+@keyframes flash { 0% { opacity: 1; } 100% { opacity: 0; } }
+
+/* Header */
+.top { display: flex; align-items: center; gap: 10px; padding: 12px 12px 4px 16px; -webkit-app-region: drag; }
+.brand { display: flex; align-items: center; gap: 8px; font-weight: 650; font-size: 13px; letter-spacing: -.01em; }
+.brand img { width: 20px; height: 20px; }
+.status {
+  display: flex; align-items: center; gap: 6px; height: 22px; padding: 0 9px; border-radius: 99px;
+  background: var(--chip); color: var(--text-2); font-size: 12px; font-weight: 550;
+  transition: background .3s, color .3s;
+}
+.status .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--good); box-shadow: 0 0 0 3px color-mix(in srgb, var(--good) 20%, transparent); }
+.frame.working .status .dot { background: var(--rose); animation: breathe 1s var(--ease) infinite alternate; box-shadow: 0 0 0 3px color-mix(in srgb, var(--rose) 22%, transparent); }
+@keyframes breathe { to { transform: scale(.55); opacity: .6; } }
+.top-right { margin-left: auto; display: flex; align-items: center; gap: 2px; -webkit-app-region: no-drag; }
+.icon-btn { width: 28px; height: 28px; border-radius: 9px; display: grid; place-items: center; color: var(--text-3); transition: background .2s, color .2s; }
+.icon-btn:hover { background: var(--chip); color: var(--text); }
+.icon-btn svg { width: 15px; height: 15px; }
+.icon-btn.on { color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.esc { padding: 4px; margin-left: 2px; }
+
+/* Body */
+.body { padding: 6px 18px 10px; }
+.result, .input {
+  font: 15.5px/1.6 var(--font); letter-spacing: -.01em; color: var(--text);
+  max-height: 300px; overflow: auto; white-space: pre-wrap; word-wrap: break-word;
+  user-select: text; -webkit-user-select: text; outline: none;
+}
+.result { min-height: 26px; }
+.result::-webkit-scrollbar, .input::-webkit-scrollbar { width: 0; }
+.input {
+  display: block; width: 100%; min-height: 96px; resize: none; border: 0; padding: 12px 14px; border-radius: 14px;
+  background: var(--chip); transition: background .2s, box-shadow .2s;
+}
+.input:focus { background: var(--glass-tint); box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--accent) 50%, transparent); }
+.result .ghost { color: var(--text-3); }
+.result.streaming .d-ins { animation: none; }
+.result .w { display: inline; animation: wordIn .45s var(--out) both; }
+@keyframes wordIn { from { opacity: 0; filter: blur(4px); } }
+.error { margin-top: 8px; font-size: 13px; color: var(--bad); }
+
+/* Ask + languages */
+.ask {
+  display: flex; align-items: center; gap: 10px; margin: 0 14px 8px; height: 40px; padding: 0 10px 0 13px; border-radius: 13px;
+  background: var(--chip); box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--violet) 40%, transparent);
+  animation: popIn .4s var(--spring) both;
+}
+.ask svg { width: 14px; height: 14px; color: var(--violet); flex: none; }
+.ask input { flex: 1; border: 0; background: none; outline: none; font-size: 14px; }
+.langs { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 14px 10px; animation: popIn .4s var(--spring) both; }
+.langs button { height: 28px; padding: 0 11px; border-radius: 99px; background: var(--chip); font-size: 12.5px; font-weight: 550; transition: background .2s, transform .3s var(--spring); }
+.langs button:hover { background: var(--chip-hover); }
+.langs button.on { background: var(--text); color: var(--canvas); }
+.langs button:active { transform: scale(.94); }
+@keyframes popIn { from { opacity: 0; transform: translateY(-4px) scale(.98); } }
+
+/* Mode chips with a sliding selection capsule */
+.modes { position: relative; display: flex; gap: 2px; padding: 4px; margin: 0 12px; border-radius: 15px; background: var(--chip); overflow-x: auto; scrollbar-width: none; }
+.modes::-webkit-scrollbar { display: none; }
+.modes button {
+  position: relative; z-index: 1; display: flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 11px;
+  font-size: 13px; font-weight: 560; color: var(--text-2); white-space: nowrap; transition: color .25s;
+}
+.modes button:hover { color: var(--text); }
+.modes button.on { color: var(--text); }
+.modes .mi { font-size: 12px; width: 14px; text-align: center; opacity: .8; }
+.modes .kbd { display: none; height: 17px; min-width: 17px; font-size: 10px; }
+body.keys .modes .kbd { display: inline-flex; }
+.pill {
+  position: absolute; z-index: 0; top: 4px; left: 0; height: 32px; width: 0; border-radius: 11px;
+  background: var(--glass-strong); box-shadow: var(--shadow-1), var(--hi);
+  transition: transform .5s var(--spring), width .5s var(--spring);
+}
+
+/* Footer */
+.foot { display: flex; align-items: center; gap: 10px; padding: 12px 12px 12px 14px; }
+.seg { position: relative; display: flex; padding: 3px; border-radius: 11px; background: var(--chip); }
+.seg button { position: relative; z-index: 1; height: 26px; padding: 0 10px; border-radius: 8px; font-size: 12px; font-weight: 560; color: var(--text-2); transition: color .2s; }
+.seg button.on { color: var(--text); }
+.seg-pill { position: absolute; top: 3px; height: 26px; border-radius: 8px; background: var(--glass-strong); box-shadow: var(--shadow-1); transition: transform .45s var(--spring), width .45s var(--spring); }
+.count { font-size: 12.5px; color: var(--text-3); font-weight: 550; white-space: nowrap; }
+.count b { color: var(--good); font-weight: 650; }
+.foot-right { margin-left: auto; display: flex; gap: 8px; }
+.foot .btn { height: 34px; }
+.foot .kbd { height: 18px; font-size: 10.5px; }
+.kbd.on-brand { background: rgba(255,255,255,.22); color: #fff; box-shadow: none; }
+.btn.brand.done { animation: pop .5s var(--spring); }
+@keyframes pop { 40% { transform: scale(1.06); } }

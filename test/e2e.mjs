@@ -1,0 +1,40 @@
+// End-to-end with the real model (skips if it isn't downloaded): live suggestions, accept, panel rewrite.
+import { _electron as electron } from 'playwright';
+import fs from 'fs'; import os from 'os'; import path from 'path';
+const models = path.join(os.homedir(), 'Library/Application Support/Writeshaper/models');
+if (!fs.existsSync(path.join(models, 'Qwen3.5-4B-Q4_K_M.gguf'))) { console.log('skip: no model'); process.exit(0); }
+const data = fs.mkdtempSync(path.join(os.tmpdir(), 'ws-e2e-'));
+fs.symlinkSync(models, path.join(data, 'models'));
+fs.writeFileSync(path.join(data, 'writeshaper.json'), JSON.stringify({ onboarded: true, autoUpdate: false }));
+let fail = 0; const ok = (c, m) => { console.log((c ? '✓ ' : '✗ ') + m); if (!c) fail++; };
+const app = await electron.launch({ args: ['.'], env: { ...process.env, WRITESHAPER_DATA: data, WRITESHAPER_KEEP_PANEL: '1', WRITESHAPER_TEST_SELECTION: 'i has went to the store yesterday and buyed three apple.' } });
+let ws; for (let i = 0; i < 100; i++) { ws = app.windows(); if (ws.length >= 2) break; await new Promise((r) => setTimeout(r, 100)); }
+const main = ws.find((w) => w.url().endsWith('index.html'));
+const panel = ws.find((w) => w.url().endsWith('panel.html'));
+await main.waitForSelector('#engine.ready', { timeout: 60000 });
+ok(true, 'engine ready');
+await main.fill('#ed', 'Me and him goes to the libary every tuesday, its our favourite place.');
+await main.dispatchEvent('#ed', 'input');
+await main.waitForSelector('#cards .card', { timeout: 30000 });
+await main.waitForSelector('#sideState:not(.on)', { state: 'attached', timeout: 30000 });
+const n = await main.locator('#cards .card').count();
+const kinds = await main.locator('#cards .card .card-main').allTextContents();
+ok(n >= 3, `live check finds ${n} suggestions: ${kinds.join(' | ')}`);
+const before = await main.inputValue('#ed');
+await main.locator('#cards .card .accept').first().click();
+await new Promise((r) => setTimeout(r, 700));
+const after = await main.inputValue('#ed');
+ok(after !== before, `accept changes the text: ${after}`);
+await main.click('#dock [data-mode="fix"]');
+await new Promise((r) => setTimeout(r, 900));
+const fixed = await main.inputValue('#ed');
+ok(/library/.test(fixed) && /Tuesday/.test(fixed), `fix all: ${fixed}`);
+await main.evaluate(() => ws.tryShortcut());
+await new Promise((r) => setTimeout(r, 400)); await panel.waitForSelector('#replace:not([disabled])', { state: 'attached', timeout: 30000 });
+const res = await panel.locator('#result').innerText();
+ok(/went|bought|apples/.test(res), `panel fixes the selection: ${res.replace(/\n/g, ' ')}`);
+await panel.locator('#modes [data-mode="short"]').click();
+await new Promise((r) => setTimeout(r, 400)); await panel.waitForSelector('#replace:not([disabled])', { state: 'attached', timeout: 30000 });
+ok((await panel.locator('#result').innerText()).length > 5, 'panel: Shorter works');
+await app.close();
+console.log(fail ? `${fail} failed` : 'all passed'); process.exit(fail ? 1 : 0);
