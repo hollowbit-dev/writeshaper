@@ -19,7 +19,7 @@ export const studioPill = (lang) => `<a class="hb-pill" href="${STUDIO}" title="
 export const studioBadge = (lang) => `<a class="hb-badge" href="${STUDIO}">${MARK}<span>${esc(t(lang).badge)}</span>${ARROW}</a>`;
 export const studioCard = (lang, app) => {
   const s = t(lang), others = APPS.filter((a) => a !== app);
-  return `<a class="hb-card" href="${STUDIO}"><span class="hb-tile">${MARK}</span><span class="hb-txt"><b>Hollowbit Studio</b><span>${esc(s.card.replace('{app}', app).replace('{others}', `${others.slice(0, -1).join(', ')} ${s.and} ${others[others.length - 1]}`))}</span></span><span class="hb-go">${esc(s.visit)}${ARROW}</span></a>`;
+  return `<a class="hb-card" href="${STUDIO}"><span class="hb-tile">${MARK}</span><span class="hb-txt"><b>Hollowbit Studio</b><span>${esc(s.card.replace('{app}', app).replace('{others}', `${others.slice(0, -1).join(lang === 'zh' ? '、' : ', ')} ${s.and} ${others[others.length - 1]}`))}</span></span><span class="hb-go">${esc(s.visit)}${ARROW}</span></a>`;
 };
 export const studioCss = `
 /* Hollowbit Studio links (site/studio.mjs) */
