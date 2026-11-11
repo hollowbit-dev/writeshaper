@@ -56,7 +56,7 @@ function paintEngine(s) {
   const el = $('#engine');
   el.className = 'engine ' + s.state;
   $('#engineText').textContent = {
-    ready: S.demo ? 'Ready · demo' : (isMac ? 'Ready · on this Mac' : 'Ready · on this PC'),
+    ready: isMac ? 'Ready · on this Mac' : 'Ready · on this PC',
     starting: 'Loading model…', nomodel: 'No model yet', error: 'Engine problem', idle: 'Starting…',
   }[s.state] || s.state;
   el.title = s.error || '';
