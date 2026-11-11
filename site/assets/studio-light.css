@@ -1,0 +1,11 @@
+
+/* Studio links, restyled for this light glass site */
+.hb-pill { border-color: var(--line-2); color: var(--text-2); }
+.hb-pill:hover { color: var(--text); border-color: var(--line-2); background: var(--chip); }
+.hb-badge { --hb-accent: #e83a76; border: 0; background: var(--glass); color: var(--text); box-shadow: var(--hi), var(--sh-1), 0 0 0 .5px var(--line); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+.hb-card { border: 0; background: var(--glass); box-shadow: var(--hi), var(--sh-2); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+.hb-card:hover { border: 0; box-shadow: var(--hi), var(--sh-3); }
+.hb-tile { background: var(--text); color: var(--bg); }
+.hb-txt { color: var(--text-2); }
+.hb-txt b, .hb-go { color: var(--text); }
+.hb-pill, .hb-badge, .hb-card { text-decoration: none; }

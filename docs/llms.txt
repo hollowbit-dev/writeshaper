@@ -1,0 +1,9 @@
+# Writeshaper
+
+> Free, open-source, offline writing assistant for Mac and Windows by Hollowbit Studio. Select text in any app, press a shortcut, and it fixes mistakes or changes the tone (clearer, shorter, friendlier, professional), or translates. The writing model (Qwen, Apache 2.0) runs locally with llama.cpp; text is never uploaded.
+
+- [Download](https://hollowbit.dev/writeshaper/download.html)
+- [Features](https://hollowbit.dev/writeshaper/features.html)
+- [FAQ](https://hollowbit.dev/writeshaper/faq.html)
+- [Privacy](https://hollowbit.dev/writeshaper/privacy.html)
+- [Source code](https://github.com/hollowbit-dev/writeshaper)
