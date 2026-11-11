@@ -1,0 +1,69 @@
+{
+ "model": "Best",
+ "made": "2026-11-11",
+ "samples": [
+  {
+   "id": "email",
+   "label": "Email to a manager",
+   "app": "Mail",
+   "to": "sarah.lee@company.com",
+   "subject": "Report",
+   "text": "hi sarah, sorry for the late reply, i was abit busy this week. i will send you the report by friday, let me know if theres anything else you need from me",
+   "out": {
+    "fix": "Hi Sarah, sorry for the late reply, I was a bit busy this week. I will send you the report by Friday. Let me know if there's anything else you need from me.",
+    "clear": "Hi Sarah, sorry for the late reply; I was a bit busy this week. I will send you the report by Friday. Let me know if you need anything else from me.",
+    "short": "Hi Sarah, sorry for the late reply; I was busy this week. I'll send the report by Friday. Let me know if you need anything else.",
+    "friendly": "Hi Sarah, so sorry for the late reply—I've been a bit swamped this week! I'll make sure to send you the report by Friday. Let me know if you need anything else from me!",
+    "pro": "Hi Sarah,\n\nApologies for the delayed reply; I was quite busy this week. I will send you the report by Friday. Please let me know if you require anything else from me.",
+    "translate": "Hola Sarah, disculpa la tardanza en mi respuesta, esta semana estaba un poco ocupado. Te enviaré el informe este viernes, avísame si necesitas algo más de mi."
+   }
+  },
+  {
+   "id": "friend",
+   "label": "Message to a friend",
+   "app": "Messages",
+   "to": "Maya",
+   "text": "hey!! are we still on for saturday? i cant remember what time we said, was it 7 or 8. also do you want me to bring anything",
+   "out": {
+    "fix": "Hey!! Are we still on for Saturday? I can't remember what time we said, was it 7 or 8? Also, do you want me to bring anything?",
+    "clear": "Hey!! Are we still on for Saturday? I can't remember what time we said, was it 7 or 8? Also, do you want me to bring anything?",
+    "short": "Hey!! Are we still on for Saturday? I can't remember the time (7 or 8?). Also, do you want me to bring anything?",
+    "friendly": "Hey!! Are we still on for Saturday? I just can't remember what time we said, was it 7 or 8? Also, do you want me to bring anything?",
+    "pro": "Hi there! Are we still on for Saturday? I can't quite remember what time we agreed on—was it 7 or 8? Also, do you want me to bring anything?",
+    "translate": "¡Hola! ¿Siguen los planes para este sábado? No recuerdo qué hora dijimos, ¿era a las 7 o a las 8? ¿Quieres que lleve algo?"
+   }
+  },
+  {
+   "id": "landlord",
+   "label": "Note to a landlord",
+   "app": "Mail",
+   "to": "lettings@homes.co",
+   "subject": "Heating",
+   "text": "Hello, the heating in my apartment has stoped working since monday and its getting really cold at night, could someone come and have a look at it as soon as posible? Im home most evenings after 6.",
+   "out": {
+    "fix": "Hello, the heating in my apartment has stopped working since Monday and it's getting really cold at night. Could someone come and have a look at it as soon as possible? I'm home most evenings after 6.",
+    "clear": "Hello, the heating in my apartment has stopped working since Monday, and it is getting very cold at night. Could someone please come and have a look as soon as possible? I am home most evenings after 6.",
+    "short": "Hello, the heating in my apartment has stopped working since Monday. It's getting very cold at night. Could someone come and have a look as soon as possible? I'm home most evenings after 6.",
+    "friendly": "Hi there, I hope you're doing well! Unfortunately, the heating in my apartment has stopped working since Monday, and it's getting really cold at night. Could someone please come and take a look as soon as possible? I'm home most evenings after 6.",
+    "pro": "Hello, the heating in my apartment has stopped working since Monday, and it is becoming very cold at night. Could someone please come and have a look at it as soon as possible? I am home most evenings after 6.",
+    "translate": "Hola, el calefón de mi apartamento dejó de funcionar desde lunes y hace mucho frío por la noche. ¿Alguien podría venir a echarle un vistazo lo antes posible? Estoy en casa la mayoría de las noches después de las 6."
+   }
+  },
+  {
+   "id": "job",
+   "label": "Job application",
+   "app": "Mail",
+   "to": "jobs@northcafe.com",
+   "subject": "Barista position",
+   "text": "Hi, Im writing to apply for the barista position. I have two years experiance working in a busy cafe, im fast, friendly and I love making coffee. I can start whenever suits you.",
+   "out": {
+    "fix": "Hi, I'm writing to apply for the barista position. I have two years of experience working in a busy cafe; I'm fast, friendly, and I love making coffee. I can start whenever suits you.",
+    "clear": "Hi, I am writing to apply for the barista position. I have two years of experience working in a busy cafe. I am fast, friendly, and I love making coffee. I can start whenever suits you.",
+    "short": "Hi, I'm applying for the barista position. I have two years of experience working in a busy cafe; I'm fast, friendly, and I love making coffee. I can start whenever suits you.",
+    "friendly": "Hi! I'm writing to apply for the barista position. I have two years of experience working in a busy cafe, and I'm fast, friendly, and I absolutely love making coffee. I can start whenever suits you.",
+    "pro": "Hi,\n\nI am writing to apply for the barista position. I have two years of experience working in a busy cafe, where I developed a reputation for being fast, friendly, and passionate about making coffee. I am available to start whenever suits you.",
+    "translate": "Hola, estoy escribiendo para aplicar al puesto de barista. Tengo dos años de experiencia trabajando en un café concurrido, soy rápido, amable y me encanta hacer café. Puedo empezar en cuanto sea conveniente para ti."
+   }
+  }
+ ]
+}

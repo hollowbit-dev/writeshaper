@@ -85,7 +85,7 @@ function rewrite({ mode, text, extra }, onText) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         messages: [{ role: 'system', content: system }, { role: 'user', content: user }],
-        temperature: mode === 'fix' ? 0.1 : 0.4,
+        temperature: mode === 'fix' ? 0.1 : mode === 'translate' ? 0.15 : mode === 'friendly' ? 0.5 : 0.3,
         top_p: 0.9,
         max_tokens: Math.min(4096, Math.ceil(text.length / 2) + 256),
         stream: true,
@@ -124,6 +124,10 @@ function clean(out, original, final) {
   s = s.replace(/^```[a-z]*\n?/, '');
   if (final) {
     s = s.replace(/\n?```\s*$/, '');
+    // Paste-back safety: drop a subject line, a sign-off or [placeholders] the user didn't write.
+    if (!/^\s*subject\s*:/i.test(original)) s = s.replace(/^\s*subject\s*:[^\n]*\n+/i, '');
+    if (!/\[[^\]]*\]/.test(original)) s = s.replace(/\n+\s*\[[^\]\n]*(name|signature|your)[^\]\n]*\]\s*$/i, '');
+    if (!/(regards|sincerely|best wishes|kind regards|cheers),?\s*$/i.test(original.trim())) s = s.replace(/\n+\s*(best regards|kind regards|warm regards|best wishes|sincerely|regards),?\s*$/i, '');
     const q = /^["“](.*)["”]$/s.exec(s.trim());
     if (q && !/^["“]/.test(original.trim())) s = q[1];
     // Keep the user's surrounding whitespace, so a replaced line keeps its line break.
