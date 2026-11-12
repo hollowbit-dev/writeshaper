@@ -5,6 +5,21 @@
   const esc = (s) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
+  // Language: open the visitor's own language once on their first visit; a manual choice always wins afterwards.
+  const W = window.WSL;
+  if (W) {
+    try {
+      const k = 'ws-lang';
+      if (!localStorage.getItem(k) && W.lang === 'en' && W.page) {
+        const pref = (navigator.languages || [navigator.language || 'en']).map((l) => l.toLowerCase().slice(0, 2)).find((l) => W.langs.includes(l));
+        localStorage.setItem(k, pref || 'en');
+        if (pref && pref !== 'en') location.replace(`${W.base}${pref}/${W.page === 'index' ? '' : `${W.page}.html`}${location.hash}`);
+      }
+      $$('[data-set-lang]').forEach((a) => a.addEventListener('click', () => localStorage.setItem(k, a.dataset.setLang)));
+    } catch { /* storage blocked */ }
+    document.addEventListener('click', (e) => { const o = $('details.lang[open]'); if (o && !o.contains(e.target)) o.removeAttribute('open'); });
+  }
+
   // Menu on small screens
   const menu = $('.menu-btn'), links = $('#links');
   menu?.addEventListener('click', () => { const o = links.classList.toggle('open'); menu.setAttribute('aria-expanded', o); });

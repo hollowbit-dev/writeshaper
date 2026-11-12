@@ -345,3 +345,20 @@ h1.split .w { display: inline-block; opacity: 0; filter: blur(16px); transform: 
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .reveal, h1.split .w { opacity: 1 !important; filter: none !important; transform: none !important; }
 }
+
+/* ---------- language menu ---------- */
+.lang { position: relative; margin-left: 6px; }
+.lang summary { list-style: none; display: flex; align-items: center; gap: 6px; height: 38px; padding: 0 12px; border-radius: 12px; color: var(--text-2); font-size: 13.5px; font-weight: 600; cursor: pointer; background: var(--chip); transition: color .2s, background .2s; }
+.lang summary::-webkit-details-marker { display: none; }
+.lang summary:hover, .lang[open] summary { color: var(--text); background: var(--chip-2); }
+.lang summary .ic { width: 16px; height: 16px; }
+.lang-menu { position: absolute; right: 0; top: 48px; min-width: 180px; padding: 6px; border-radius: 16px; display: grid; z-index: 60; background: var(--glass-strong); backdrop-filter: blur(30px) saturate(1.8); -webkit-backdrop-filter: blur(30px) saturate(1.8); box-shadow: var(--hi), var(--sh-3), 0 0 0 .5px var(--line); animation: langPop .25s var(--spring); }
+.lang-menu a { padding: 9px 12px; border-radius: 10px; font-size: 14.5px; color: var(--text-2); text-decoration: none; }
+.lang-menu a:hover { background: var(--chip); color: var(--text); }
+.lang-menu a[aria-current] { color: var(--text); font-weight: 600; }
+.lang-menu a[aria-current]::after { content: "\2713"; float: right; color: var(--accent); }
+@keyframes langPop { from { opacity: 0; transform: translateY(-6px) scale(.97); } }
+@media (max-width: 760px) {
+  .lang { margin-left: auto; }
+  .menu-btn { margin-left: 6px; }
+}
