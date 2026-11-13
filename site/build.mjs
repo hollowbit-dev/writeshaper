@@ -26,7 +26,7 @@ const EN = LANGS[0];
 // Sizes and checksums: from the local installers if they're built, otherwise from the GitHub release (same files).
 const REL = {};
 try {
-  const r = await fetch(`https://api.github.com/repos/hollowbit-dev/writeshaper/releases/tags/v${V}`, { headers: { 'User-Agent': 'hollowbit-site-build' } });
+  const r = await fetch(`https://api.github.com/repos/hollowbit-dev/writeshaper/releases/tags/v${V}`, { headers: { 'User-Agent': 'hollowbit-site-build', ...(process.env.GITHUB_TOKEN ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` } : {}) } });
   if (r.ok) for (const a of (await r.json()).assets || []) REL[a.name] = { size: a.size, sha: (a.digest || '').replace(/^sha256:/, '') };
 } catch { /* offline */ }
 const mb = (file) => { const p = path.join(root, 'dist', file); return fs.existsSync(p) ? Math.round(fs.statSync(p).size / 1e6) : REL[file] ? Math.round(REL[file].size / 1e6) : 110; };
